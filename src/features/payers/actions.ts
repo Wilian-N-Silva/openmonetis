@@ -1,6 +1,5 @@
 "use server";
 
-import { randomBytes } from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -17,6 +16,7 @@ import {
 	PAYER_ROLE_THIRD_PARTY,
 	PAYER_STATUS_OPTIONS,
 } from "@/shared/lib/payers/constants";
+import { generateShareCode } from "@/shared/lib/payers/share-code";
 import { normalizeAvatarPath } from "@/shared/lib/payers/utils";
 import { noteSchema, uuidSchema } from "@/shared/lib/schemas/common";
 import type { ActionResult } from "@/shared/lib/types/actions";
@@ -82,12 +82,6 @@ type ShareCodeJoinInput = z.infer<typeof shareCodeJoinSchema>;
 type ShareCodeRegenerateInput = z.infer<typeof shareCodeRegenerateSchema>;
 
 const revalidate = (userId: string) => revalidateForEntity("payers", userId);
-
-const generateShareCode = () => {
-	// base64url já retorna apenas [a-zA-Z0-9_-]
-	// 18 bytes = 24 caracteres em base64
-	return randomBytes(18).toString("base64url").slice(0, 24);
-};
 
 export async function createPayerAction(
 	input: CreateInput,

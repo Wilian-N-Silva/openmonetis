@@ -17,6 +17,7 @@ import {
 	PAYER_STATUS_OPTIONS,
 } from "@/shared/lib/payers/constants";
 import { getAdminPayerId } from "@/shared/lib/payers/get-admin-id";
+import { generateShareCode } from "@/shared/lib/payers/share-code";
 import { normalizeNameFromEmail } from "@/shared/lib/payers/utils";
 import { deleteS3Object } from "@/shared/lib/storage/presign";
 
@@ -153,6 +154,7 @@ async function resetUserAppData(
 			note: null,
 			role: PAYER_ROLE_ADMIN,
 			isAutoSend: false,
+			shareCode: generateShareCode(),
 			userId,
 		});
 	});

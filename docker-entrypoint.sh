@@ -1,15 +1,5 @@
 #!/bin/sh
 
-echo "Habilitando extensão pgcrypto..."
-node -e "
-const { Client } = require('/app/migrate/node_modules/pg');
-const c = new Client({ connectionString: process.env.DATABASE_URL });
-c.connect()
-  .then(() => c.query('CREATE EXTENSION IF NOT EXISTS pgcrypto'))
-  .then(() => c.end())
-  .catch((e) => { console.error('Aviso pgcrypto:', e.message); process.exit(0); });
-"
-
 echo "Rodando migrations..."
 MIGRATED=0
 for i in 1 2 3 4 5; do

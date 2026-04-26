@@ -190,6 +190,13 @@
 			"when": 1777042423451,
 			"tag": "0026_bored_eternity",
 			"breakpoints": true
+		},
+		{
+			"idx": 28,
+			"version": "7",
+			"when": 1777153372633,
+			"tag": "0028_fancy_reaper",
+			"breakpoints": true
 		}
 	]
 }

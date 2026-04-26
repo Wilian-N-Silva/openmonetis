@@ -44,6 +44,7 @@ import {
 	PAYER_ROLE_THIRD_PARTY,
 	PAYER_STATUS_OPTIONS,
 } from "@/shared/lib/payers/constants";
+import { generateShareCode } from "@/shared/lib/payers/share-code";
 import { normalizeNameFromEmail } from "@/shared/lib/payers/utils";
 import {
 	addMonthsToDate,
@@ -537,6 +538,7 @@ async function ensureAdminPayer(targetUser: typeof user.$inferSelect) {
 			note: null,
 			role: PAYER_ROLE_ADMIN,
 			isAutoSend: false,
+			shareCode: generateShareCode(),
 			userId: targetUser.id,
 		})
 		.returning({ id: payers.id, name: payers.name });
@@ -870,6 +872,7 @@ async function main() {
 					note: definition.note,
 					role: PAYER_ROLE_THIRD_PARTY,
 					isAutoSend: definition.isAutoSend,
+					shareCode: generateShareCode(),
 					userId: targetUser.id,
 				})
 				.returning({ id: payers.id });

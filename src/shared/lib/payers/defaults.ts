@@ -6,6 +6,7 @@ import {
 	PAYER_ROLE_ADMIN,
 	PAYER_STATUS_OPTIONS,
 } from "./constants";
+import { generateShareCode } from "./share-code";
 import { normalizeNameFromEmail } from "./utils";
 
 const DEFAULT_STATUS = PAYER_STATUS_OPTIONS[0];
@@ -49,6 +50,7 @@ export async function ensureDefaultPagadorForUser(user: SeedUserLike) {
 		avatarUrl,
 		note: null,
 		isAutoSend: false,
+		shareCode: generateShareCode(),
 		userId,
 	});
 }

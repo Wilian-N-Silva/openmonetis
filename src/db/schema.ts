@@ -236,9 +236,7 @@ export const payers = pgTable(
 		note: text("anotacao"),
 		role: text("role"),
 		isAutoSend: boolean("is_auto_send").notNull().default(false),
-		shareCode: text("share_code")
-			.notNull()
-			.default(sql`substr(encode(gen_random_bytes(24), 'base64'), 1, 24)`),
+		shareCode: text("share_code").notNull(),
 		lastMailAt: timestamp("last_mail", {
 			mode: "date",
 			withTimezone: true,
