@@ -7,9 +7,9 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Unreleased]
 
-## [2.4.4] - 2026-04-25
+## [2.4.4] - 2026-04-27
 
-Esta versão remove a dependência da extensão `pgcrypto` do PostgreSQL para a geração do `share_code` em pagadores. O default a nível de banco (`gen_random_bytes`) foi removido — agora a aplicação gera o código sempre via `crypto.randomBytes` do Node.js, num utilitário compartilhado. A consequência prática é que o setup inicial fica mais simples: não há mais script de habilitação de extensão, nem etapa extra no primeiro `db:push`, e bancos restaurados de dumps externos não precisam ter `pgcrypto` instalada. O script de backup também foi enxugado para gerar dumps focados nos schemas relevantes (`public` e `drizzle`), descartando os schemas internos do Supabase e eliminando os ~148 erros de restore em PostgreSQL padrão.
+Esta versão remove a dependência da extensão `pgcrypto` do PostgreSQL para a geração do `share_code` em pagadores. O default a nível de banco (`gen_random_bytes`) foi removido — agora a aplicação gera o código sempre via `crypto.randomBytes` do Node.js, num utilitário compartilhado. A consequência prática é que o setup inicial fica mais simples: não há mais script de habilitação de extensão, nem etapa extra no primeiro `db:push`, e bancos restaurados de dumps externos não precisam ter `pgcrypto` instalada. O script de backup também foi enxugado para gerar dumps focados nos schemas relevantes (`public` e `drizzle`), descartando os schemas internos do Supabase e eliminando os ~148 erros de restore em PostgreSQL padrão. Por fim, os logos da marca (ícone laranja e wordmark) foram vetorizados: as PNGs antigas foram substituídas por SVGs inline em componentes próprios e por arquivos `.svg` no `public/`, escalando perfeitamente em qualquer tamanho — inclusive nos PDFs exportados, que agora rasterizam o SVG em alta resolução.
 
 ### Alterado
 
@@ -17,22 +17,28 @@ Esta versão remove a dependência da extensão `pgcrypto` do PostgreSQL para a 
 - Pagadores: nova função utilitária `generateShareCode()` em `src/shared/lib/payers/share-code.ts` (server-only) — usa `crypto.randomBytes(18).toString("base64url").slice(0, 24)`
 - Pagadores: `createPayerAction`, `ensureDefaultPagadorForUser`, `resetUserAppData` (settings) e `mock-data.ts` agora chamam `generateShareCode()` ao inserir um pagador
 - Backup: `scripts/backup.sh` agora dumpa apenas os schemas `public` e `drizzle` — schemas internos do Supabase (`auth`, `realtime`, `storage`, `vault`, `graphql`, `graphql_public`, `extensions`, `pgbouncer`) e suas extensions/roles deixam de poluir os dumps. Restaurações em PostgreSQL padrão passam a executar sem os ~148 erros de `role/extension does not exist`
+- Logo: `Logo` foi quebrado em três arquivos — `src/shared/components/logo.tsx` (orquestrador), `logo-icon.tsx` (ícone laranja em SVG inline, viewBox `0 0 200 200`) e `logo-text.tsx` (wordmark em SVG inline, viewBox `0 0 574.201 89.6`). API pública (`variant`, `invertTextOnDark`, `colorIcon`, `iconClassName`, `textClassName`) preservada
+- Assets: `public/images/logo_small.png` e `logo_text.png` substituídos por `logo_small.svg` e `logo_text.svg` (com `width`/`height` explícitos para compatibilidade com `<img>` em canvas)
+- Exports: `loadExportLogoDataUrl` agora carrega SVG e rasteriza no canvas a 4× a resolução natural antes de gerar o data URL — mantém nitidez quando o PDF amplia a imagem
 
 ### Removido
 
 - Pasta `scripts/postgres/` (continha `init.sql` e `enable-extensions.ts`)
 - Script `pnpm db:extensions` no `package.json`
 - Referências ao `pnpm db:extensions` no README
+- `public/images/logo_small.png` e `public/images/logo_text.png` (substituídos pelos `.svg`)
 
 ### Corrigido
 
 - Migrations: conflito de numeração resolvido — `0027_fancy_reaper` renomeado para `0028_fancy_reaper` (o número 0027 já estava ocupado pelo arquivo órfão `0027_glorious_mindworm`); journal e snapshot atualizados
+- TS: removido `baseUrl` do `tsconfig.json` para evitar erro `TS5101` (deprecação no TS 7) — `moduleResolution: bundler` resolve os `paths` relativos ao próprio `tsconfig`, dispensando `baseUrl`
 
 ### Documentação
 
 - README: seção Backup atualizada — arquivos gerados agora especificam que apenas os schemas `public` e `drizzle` são dumpados
 - README: seção Restore reescrita com o fluxo correto para banco Docker (`DROP SCHEMA public CASCADE` + `pg_restore --clean --if-exists --disable-triggers`)
 - README: comando rápido de Docker Compose de backup/restore substituído por `pnpm backup`
+- README: header passa a apontar para `logo_small.svg`
 
 ## [2.4.3] - 2026-04-25
 
